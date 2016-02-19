@@ -21,7 +21,7 @@
 
 
 /* The pins that you will use for the lcd control will be
- * LCD_RS      RC4
+ * TRISCbits.TRISC4      RC4
  * LCD_E       RC2
  * LCD_D4      RE7
  * LCD_D5      RE5
@@ -31,20 +31,20 @@
  * help you debug your implementation!
  */
 
-#define LCD_DATA LATE
+/*#define LCD_DATA TRISE
 #define LCD_RS TRISCbits.TRISC4
 #define LCD_E TRISCbits.TRISC2
 
 #define TRIS_D4 LATEbits.LATE4
-#define TRIS_D7 LATEbits.LATE7
-#define TRIS_D6 LATEbits.LATE6
 #define TRIS_D5 LATEbits.LATE5
+#define TRIS_D6 LATEbits.LATE6
+#define TRIS_D7 LATEbits.LATE7
 #define TRIS_RS LATCbits.LATC4
-#define TRIS_E LATCbits.LATC2
+#define TRIS_E LATCbits.LATC2*/
 
 /* This function should take in a two-byte word and writes either the lower or upper
  * byte to the last four bits of LATE. Additionally, according to the LCD data sheet
- * It should set LCD_RS and LCD_E with the appropriate values and delays.
+ * It should set TRISCbits.TRISC4 and LCD_E with the appropriate values and delays.
  * After these commands are issued, there should be a delay.
  * The command type is a simplification. From the data sheet, the RS is '1'
  * when you are simply writing a character. Otherwise, RS is '0'.
@@ -60,25 +60,25 @@ void writeFourBits(unsigned char word, unsigned int commandType, unsigned int de
     //LATEbits.LATE4 = word&0x04;
     //LATEbits.LATE6 = word&0x08;
     if(lower){ // set least sig bits
-        TRIS_D4 = word&0x01;
-        TRIS_D5 = word&0x02;
-        TRIS_D6 = word&0x03;
-        TRIS_D7 = word&0x04;
+        LATEbits.LATE4 = word & 0x01;
+        LATEbits.LATE5 = (word >> 1) & 0x01;
+        LATEbits.LATE6 = (word >> 2) & 0x01;
+        LATEbits.LATE7 = (word >> 3) & 0x01;
     }
     else{ // set most sig figs
-        TRIS_D4 = word&0x01;
-        TRIS_D5 = word&0x02;
-        TRIS_D6 = word&0x03;
-        TRIS_D7 = word&0x04;
+        LATEbits.LATE4 = (word >> 4) & 0x01;
+        LATEbits.LATE5 = (word >> 5) & 0x01;
+        LATEbits.LATE6 = (word >> 6) & 0x01;
+        LATEbits.LATE7 = (word >> 7) & 0x01;
     }
-    LCD_RS = commandType; // 1 for write 0 for FUCKING USELESS we never read. and the ports would have to be changed to inputs instead of outputs to read anyways
+    LATCbits.LATC4 = commandType; // 1 for write 0 for read,  LCD_RW
     //enable
-    LCD_E = 1; // This allows reading of data into LCD mem
+    LATCbits.LATC2 = 1; // This allows reading of data into LCD mem,  LCD_E
     //delay
-    delayUs(1);
+    delayUs(10);
     //disable
-    LCD_E = 0; // Finishes writing data
-    delayUs(1);
+    LATCbits.LATC2 = 0; // Finishes writing data, LCD_E
+    delayUs(10);
     delayUs(delayAfter);
 }
 
@@ -103,23 +103,67 @@ void printCharLCD(char c) {
 void initLCD(void) {
     // Setup D, RS, and E to be outputs (0).
     
-    //LCD_DATA = OUTPUT;
-    LCD_RS = OUTPUT;
+    //TRISE = OUTPUT;
+    TRISCbits.TRISC4 = OUTPUT; // LCD_RS output
+    TRISCbits.TRISC2 = OUTPUT; // LCD_E
     //LATC = OUTPUT;
-    LATEbits.LATE4 = OUTPUT;
-    LATEbits.LATE5 = OUTPUT;
-    LATEbits.LATE6 = OUTPUT;
-    LATEbits.LATE7 = OUTPUT;
+    TRISEbits.TRISE4 = OUTPUT;
+    TRISEbits.TRISE5 = OUTPUT;
+    TRISEbits.TRISE6 = OUTPUT;
+    TRISEbits.TRISE7 = OUTPUT;
     
     
-    TRIS_D4 = 1;
-    TRIS_D5 = 1;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
-    TRIS_E = 0;
-    delayUs(4100);
-    delayUs(100);
+    /*while(1){
+    LATEbits.LATE4 = 1;
+    LATEbits.LATE5 = 1;
+    LATEbits.LATE6 = 1;
+    LATEbits.LATE7 = 1;
+    LATCbits.LATC4 = 1;
+    LATCbits.LATC2 = 1;
+    }//*/
+    
+    LATEbits.LATE4 = 1;
+    LATEbits.LATE5 = 1;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    LATCbits.LATC2 = 0;//*/
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);//*/
+    //LATCbits.LATC2 = 0;//*/
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    LATCbits.LATC2 = 1;
+    delayUs(210);
+    LATCbits.LATC2 = 0;//*/
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    LATCbits.LATC2 = 1;
+    delayUs(210);
+    LATCbits.LATC2 = 0;//*/
     
     // Initialization sequence utilizes specific LCD commands before the general configuration
     // commands can be utilized. The first few initialization commands cannot be done using the
@@ -127,84 +171,148 @@ void initLCD(void) {
     
     // Enable 4-bit interface
     // Initialization line/code for setting as 4Bit interface
-    TRIS_D4 = 0;
-    TRIS_D5 = 1;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 1;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    LATCbits.LATC2 = 0;//*/
     // Delay for
-    delayUs(100);
+    delayUs(40);
         
     // Function Set (specifies data width, lines, and font.
-    TRIS_D4 = 0;
-    TRIS_D5 = 1;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 1;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    //LATCbits.LATC2 = 0;//*/
     // Delay for
     delayUs(40);
     
-    TRIS_D4 = 0;
-    TRIS_D5 = 0;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    LATCbits.LATC2 = 0;//*/
     // Delay for
-    delayUs(1000);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
 
     // 4-bit mode initialization is complete. We can now configure the various LCD
     // options to control how the LCD will function.
     // TODO: Display On/Off Control
-    TRIS_D4 = 0;
-    TRIS_D5 = 0;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    //LATCbits.LATC2 = 0;//*/
     // Delay for
     delayUs(40);
-    TRIS_D4 = 0;
-    TRIS_D5 = 0;
-    TRIS_D6 = 0;
-    TRIS_D7 = 1;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 1;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    LATCbits.LATC2 = 0;//*/
     // Delay for
-    delayUs(1000);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
     // Turn Display (D) Off
     
     // clear
-    TRIS_D4 = 0;
-    TRIS_D5 = 0;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    //LATCbits.LATC2 = 0;//*/
     // Delay for
     delayUs(40);
-    TRIS_D4 = 1;
-    TRIS_D5 = 0;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 1;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    LATCbits.LATC2 = 0;//*/
     // Delay for
-    delayUs(1000);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
     // done clearing
     // TODO: Clear Display (The delay is not specified in the data sheet at this point. You really need to have the clear display delay here.
     
     // TODO: Entry Mode Set
         // Set Increment Display, No Shift (i.e. cursor move)
-    TRIS_D4 = 0;
-    TRIS_D5 = 0;
-    TRIS_D6 = 0;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    //LATCbits.LATC2 = 0;//*/
     // Delay for
     delayUs(40);
-    TRIS_D4 = 0;
-    TRIS_D5 = 1;
-    TRIS_D6 = 1;
-    TRIS_D7 = 0;
-    TRIS_RS = 0;
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 1;
+    LATEbits.LATE6 = 1;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(40);
+    LATCbits.LATC2 = 0;//*/
     // Delay for
-    delayUs(1000);
+    delayUs(210);
+    delayUs(210);
+    delayUs(210);
+    /*while(1){
+    delayUs(210);
+    delayUs(210);
+    LATEbits.LATE4 = 0;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(210);
+    delayUs(210);
+    //LATCbits.LATC2 = 0;
+    delayUs(210);
+    delayUs(210);
+    LATEbits.LATE4 = 1;
+    LATEbits.LATE5 = 0;
+    LATEbits.LATE6 = 0;
+    LATEbits.LATE7 = 0;
+    LATCbits.LATC4 = 0;
+    LATCbits.LATC2 = 1;
+    delayUs(210);
+    delayUs(210);
+    LATCbits.LATC2 = 0;}//*/
     // input mode set
     // TODO: Display On/Off Control
         // Turn Display (D) On, Cursor (C) Off, and Blink(B) Off
@@ -238,13 +346,48 @@ void moveCursorLCD(unsigned char x, unsigned char y){
  */
 void testLCD(){
     initLCD();
-    int i = 0;
+    //while(1){
+        /*delayUs(210);
+        delayUs(210);
+        delayUs(210);
+        delayUs(210);
+        delayUs(210);
+        delayUs(210);
+        delayUs(210);*/
+        delayUs(200);
+        LATEbits.LATE4 = 0;
+        LATEbits.LATE5 = 1;
+        LATEbits.LATE6 = 0;
+        LATEbits.LATE7 = 0;
+
+        LATCbits.LATC4 = 1; // 1 for write 0 for read,  LCD_RW
+        //enable
+        delayUs(1);
+        LATCbits.LATC2 = 1; // This allows reading of data into LCD mem,  LCD_E
+        //delay
+        delayUs(40);
+        //disable
+        //LATCbits.LATC2 = 0; // Finishes writing data, LCD_E
+        delayUs(1000);
+        LATEbits.LATE4 = 0;
+        LATEbits.LATE5 = 0;
+        LATEbits.LATE6 = 1;
+        LATEbits.LATE7 = 1;
+        //enable
+        //LATCbits.LATC2 = 1; // This allows reading of data into LCD mem,  LCD_E
+        //delay
+        delayUs(100);
+        //disable
+        LATCbits.LATC2 = 0; // Finishes writing data, LCD_E
+    //}
+    //delayUs(100000000);//*/
+    //int i = 0;
     printCharLCD('c');
-    for(i = 0; i < 1000; i++) delayUs(1000);
+    /*for(i = 0; i < 1000; i++) delayUs(1000);
     clearLCD();
     printStringLCD("Hello!");
     moveCursorLCD(1, 2);
     for(i = 0; i < 1000; i++) delayUs(1000);
     printStringLCD("Hello!");
-    for(i = 0; i < 1000; i++) delayUs(1000);
+    for(i = 0; i < 1000; i++) delayUs(1000);*/
 }
